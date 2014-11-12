@@ -1,0 +1,328 @@
+<?php
+
+/**
+  * @file
+  * Allows visitors to calculate price difference of trip.
+  */
+  
+/**
+ * Implements hook_menu().
+ */
+function calculator_menu() {
+  $items = array();
+
+  $items['airport/calculator'] = array(
+    'title' => 'Trip Calculator',
+    'description' => 'Configure calculation information for trip calculator.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('calculator_simplest'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+  
+/**
+ * Basic AJAX callback example.
+ *
+ * Simple form whose ajax-enabled 'changethis' member causes a text change
+ * in the description of the 'replace_textfield' member.
+ *
+ * See @link http://drupal.org/node/262422 Form API Tutorial @endlink
+ */
+function calculator_simplest($form, &$form_state) {
+  $form = array();
+  
+  $form['cos'] = array (
+	'#title' => t('Colorado Springs Airport'),
+	'#type' => 'fieldset',
+	'#prefix' => '<div style="max-width:45%;float:left;">',
+	'#suffix' => '</div>',
+	'#collapsible' => false,
+	'#collapsed' => false,
+  );
+  
+  $form['cos']['calculator_flight_cost'] = array(
+    '#title' => t('Flight Cost'),
+    '#description' => t('The amount you pay for your ticket to fly from the Colorado Springs airport.'),
+    '#type' => 'textfield',
+    '#maxlength' => 11,
+	'#size' => 20, 
+    '#default_value' => null,
+    //'#weight' => 1,
+  );
+  
+  $form['cos']['calculator_parking_rate'] = array(
+    '#title' => t('Parking Rate (per day)'),
+    '#description' => t('The amount you pay to leave your car at the Colorado Springs airport.'),
+    '#type' => 'select',
+	'#options' => array(
+      '6' => t('Long Term $6'),
+      '8' => t('Short Term $8'),
+      '14' => t('Valet $14')
+    ),
+    '#validated' => true,
+    //'#weight' => 2,
+  );
+  
+  $form['cos']['calculator_days_travel'] = array(
+    '#title' => t('Days of travel'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    //'#weight' => 4,
+  );
+  
+  $form['cos']['calculator_mileage_charge'] = array(
+    '#title' => t('Mileage charge'),
+    '#description' => t('/mile'),
+    '#type' => 'textfield',
+    '#default_value' => t('0.565'),
+	'#size' => 20, 
+    //'#weight' => 5,
+  );
+  
+  $form['cos']['calculator_distance_miles'] = array(
+    '#title' => t('Distance to Airport (miles)'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    //'#weight' => 6,
+  );
+  
+  $form['cos']['calculator_toll'] = array(
+    '#title' => t('Toll: E470'),
+    '#description' => t(''),
+    '#type' => 'checkbox',
+    '#default_value' => false,
+    //'#weight' => 7,
+	'#disabled' => true,
+  );
+  
+  $form['cos']['calculator_cab_fare'] = array(
+    '#title' => t('Cab or shuttle fare'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    //'#weight' => 8,
+  );
+  
+  $form['cos']['calculator_hourly_rate'] = array(
+    '#title' => t('Hourly rate'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    //'#weight' => 9,
+  );
+  
+  $form['cos']['calculator_driving_time'] = array(
+    '#title' => t('Driving time (minutes)'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    //'#weight' => 10,
+  );
+
+  // END COS FIELDS
+  // BEGIN DEN FIELDS
+  
+  $form['den'] = array (
+	'#title' => t('Denver International Airport'),
+	'#type' => 'fieldset',
+	'#prefix' => '<div style="max-width:45%;float:left;">',
+	'#suffix' => '</div>',
+	'#collapsible' => false,
+	'#collapsed' => false,
+  );
+  
+  $form['den']['calculator_den_flight_cost'] = array(
+    '#title' => t('Flight Cost'),
+    '#description' => t('The amount you pay for your ticket to fly from the Colorado Springs airport.'),
+    '#type' => 'textfield',
+    '#maxlength' => 11,
+	'#size' => 20, 
+    '#default_value' => null,
+    //'#weight' => 1,
+  );
+  
+  $form['den']['calculator_den_parking_rate'] = array(
+    '#title' => t('Parking Rate (per day)'),
+    '#description' => t('The amount you pay to leave your car at the Colorado Springs airport.'),
+    '#type' => 'select',
+	'#options' => array(
+	  '8' => t('Shuttle Lot $8'), 
+	  '12' => t('Economy $12'), 
+	  '23' => t('Garage $23'), 
+	  '32' => t('Valet $32'), 
+	  '96' => t('Short Term $96')
+    ),
+    '#validated' => true,
+    //'#weight' => 2,
+  );
+  
+  $form['den']['calculator_den_days_travel'] = array(
+    '#title' => t('Days of travel'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    //'#weight' => 4,
+  );
+  
+  $form['den']['calculator_den_mileage_charge'] = array(
+    '#title' => t('Mileage charge'),
+    '#description' => t('/mile'),
+    '#type' => 'textfield',
+    '#default_value' => t('0.565'),
+	'#size' => 20, 
+    //'#weight' => 5,
+  );
+  
+  $form['den']['calculator_den_distance_miles'] = array(
+    '#title' => t('Distance to Airport (miles)'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    //'#weight' => 6,
+  );
+  
+  $form['den']['calculator_den_toll'] = array(
+    '#title' => t('Toll: E470'),
+    '#description' => t(''),
+    '#type' => 'checkbox',
+    '#default_value' => false,
+    //'#weight' => 7,
+	//'#disabled' => true,
+  );
+  
+  $form['den']['calculator_den_cab_fare'] = array(
+    '#title' => t('Cab or shuttle fare'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    //'#weight' => 8,
+  );
+  
+  $form['den']['calculator_den_hourly_rate'] = array(
+    '#title' => t('Hourly rate'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    //'#weight' => 9,
+  );
+  
+  $form['den']['calculator_den_driving_time'] = array(
+    '#title' => t('Driving time (minutes)'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    //'#weight' => 10,
+  );
+  
+  
+  // END OF FIELDS!!!
+  
+  // This entire form element will be replaced whenever 'changethis' is updated.
+  $form['logic'] = array(
+	'#title' => t('Totals'),
+	'#type' => 'fieldset',
+	'#prefix' => '<div class="clearfix" style="max-width:90%;">',
+	'#suffix' => '</div>',
+	'#collapsible' => false,
+	'#collapsed' => false,
+  );
+  
+  $form['logic']['replace_textfield'] = array(
+    '#title' => t('Flight Cost'),
+    '#markup' => 'Your total will be shown here.',
+    // The prefix/suffix provide the div that we're replacing, named by
+    // #ajax['wrapper'] above.
+    '#prefix' => '<div id="replace_textfield_div"><h2>',
+    '#suffix' => '</h2></div>',
+  );
+  
+  $form['logic']['changethis'] = array(
+    '#type' => 'button',
+	'#value' => 'Calculate',
+    '#ajax' => array(
+      // #ajax has two required keys: callback and wrapper.
+      // 'callback' is a function that will be called when this element changes.
+      'callback' => 'calculator_simplest_callback',
+      // 'wrapper' is the HTML id of the page element that will be replaced.
+      'wrapper' => 'replace_textfield_div',
+      // There are also several optional keys - see calculator_autocheckboxes
+      // below for details on 'method', 'effect' and 'speed' and
+      // calculator_dependent_dropdown for 'event'.
+    ),
+  );
+
+  
+  // An AJAX request calls the form builder function for every change.
+  // We can change how we build the form based on $form_state.
+  if (!empty($form_state['values']['changethis'])) {
+  
+	  // START COS TOTAL
+	  $c1 = $form_state['values']['calculator_flight_cost'];
+	  $c2 = $form_state['values']['calculator_parking_rate'];
+	  $c3 = $form_state['values']['calculator_days_travel'];
+	  $c4 = $form_state['values']['calculator_mileage_charge']; // assuming going there and coming back? hence ($c4*2)
+	  $c5 = $form_state['values']['calculator_distance_miles'];
+	  $c6 = $form_state['values']['calculator_toll']; // add $18.90
+		if ($c6) {
+			$c6 = 18.90;
+		}
+	  $c7 = $form_state['values']['calculator_cab_fare'];
+	  $c8 = $form_state['values']['calculator_hourly_rate'];
+	  $c9 = $form_state['values']['calculator_driving_time'];
+	  $c10 = ($c8 * ($c9 / 60)) * 2;
+	  // TOTAL FOR COS
+	  $total = $c1 + (($c2 * $c3) + (($c4*2) * $c5)) + $c6 + ($c7 * 2) + $c10;
+	  
+	  // START DEN TOTAL
+	  $d1 = $form_state['values']['calculator_den_flight_cost'];
+	  $d2 = $form_state['values']['calculator_den_parking_rate'];
+	  $d3 = $form_state['values']['calculator_den_days_travel'];
+	  $d4 = $form_state['values']['calculator_den_mileage_charge']; // assuming going there and coming back? hence ($c4*2)
+	  $d5 = $form_state['values']['calculator_den_distance_miles'];
+	  $d6 = $form_state['values']['calculator_den_toll']; // add $18.90
+		if ($d6) {
+			$d6 = 18.90;
+		}
+	  $d7 = $form_state['values']['calculator_den_cab_fare'];
+	  $d8 = $form_state['values']['calculator_den_hourly_rate'];
+	  $d9 = $form_state['values']['calculator_den_driving_time'];
+	  $d10 = ($c8 * ($c9 / 60)) * 2;
+	  // TOTAL FOR DEN
+	  $dtotal = $d1 + (($d2 * $d3) + (($d4*2) * $d5)) + $d6 + ($d7 * 2) + $d10;
+  
+  
+    $form['logic']['replace_textfield']['#markup'] = t("Your total for COS is: $@value<br /> Your total for DEN is: $@dvalue", array('@value' => number_format((float)$total, 2, '.', ''), '@dvalue' => number_format((float)$dtotal, 2, '.', '')));
+  }
+  return $form;
+}
+
+/**
+ * Callback for calculator_simplest.
+ *
+ * On an ajax submit, the form builder function is called again, then the $form
+ * and $form_state are passed to this callback function so it can select which
+ * portion of the form to send on to the client.
+ *
+ * @return array
+ *   Renderable array (the textfield element)
+ */
+function calculator_simplest_callback($form, $form_state) {
+  // The form has already been submitted and updated. We can return the replaced
+  // item as it is.
+  return $form['logic']['replace_textfield'];
+}

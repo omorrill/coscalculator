@@ -1,0 +1,8 @@
+name = FlyCOS Trip Calculator
+description = Calculates trip cost differences and stuff
+package = City COS
+core = 7.x
+version = 7.x-0.1-dev
+configure = admin/config/user-interface/calculator
+
+;scripts[] = calculator_ajax_functions.js

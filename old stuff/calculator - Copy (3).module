@@ -1,0 +1,307 @@
+<?php
+
+/**
+  * @file
+  * Allows visitors to calculate price difference of trip.
+  */
+
+/**
+ * Implements hook_menu().
+ */
+function calculator_menu() {
+  $items = array();
+
+  $items['calculator'] = array(
+    'title' => 'Trip Calculator',
+    'description' => 'Configure calculation information for trip calculator.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('trip_calculator_form'),
+    'access arguments' => array('view published content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form().
+ */
+ function calculator_form($node, &$form_state) {
+  $form = array();
+  
+  /*
+  $form['overview'] = array (
+	'#markup' => t('This is just a test.'),
+	'#prefix' => '<p>',
+	'#suffix' => '</p>',
+  );
+  */
+  $form['cos'] = array (
+	'#title' => t('Colorado Springs Airport'),
+	'#type' => 'fieldset',
+	'#prefix' => '<div style="max-width:40%;float:left;">',
+	'#suffix' => '</div>',
+	'#collapsible' => false,
+	'#collapsed' => false,
+  );
+  
+  $form['den'] = array (
+	'#title' => t('Denver International Airport'),
+	'#type' => 'fieldset',
+	'#prefix' => '<div style="max-width:40%;float:left;">',
+	'#suffix' => '</div>',
+	'#collapsible' => false,
+	'#collapsed' => false,
+  );
+  
+  // BEGIN COLORADO SPRINGS COSTS
+  $form['cos']['calculator_flight_cost'] = array(
+    '#title' => t('Flight Cost'),
+    '#description' => t('The amount you pay for your ticket to fly from the Colorado Springs airport.'),
+    '#type' => 'textfield',
+    '#maxlength' => 11,
+	'#size' => 20, 
+    // '#default_value' => t('$0.00'),
+    '#weight' => 1,
+  );
+  
+  $form['cos']['calculator_parking_rate'] = array(
+    '#title' => t('Parking Rate (per day)'),
+    '#description' => t('The amount you pay to leave your car at the Colorado Springs airport.'),
+    '#type' => 'select',
+	'#options' => drupal_map_assoc(
+		array(
+			t('Long Term $6'), 
+			t('Short Term $8'), 
+			t('Valet $14')
+		)
+	),
+    '#validated' => true,
+    '#weight' => 2,
+  );
+  
+  $form['cos']['calculator_free_parking'] = array(
+    '#title' => t('Free parking (coupon)'),
+    '#description' => t(''),
+    '#type' => 'select',
+	'#options' => drupal_map_assoc(
+		array(
+			t('2 coupons'),
+			t('1 coupon'),
+			t('No coupons')
+		)
+	),
+	'#validated' => true,
+    '#weight' => 3,
+  );
+  
+  $form['cos']['calculator_days_travel'] = array(
+    '#title' => t('Days of travel'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    '#weight' => 4,
+  );
+  
+  $form['cos']['calculator_mileage_charge'] = array(
+    '#title' => t('Mileage charge'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => t('0.565'),
+	'#size' => 20, 
+    '#weight' => 5,
+  );
+  
+  $form['cos']['calculator_distance_miles'] = array(
+    '#title' => t('Distance to Airport (miles)'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    '#weight' => 6,
+  );
+  
+  $form['cos']['calculator_toll'] = array(
+    '#title' => t('Toll: E470'),
+    '#description' => t(''),
+    '#type' => 'checkbox',
+    '#default_value' => false,
+    '#weight' => 7,
+	'#disabled' => true,
+  );
+  
+  $form['cos']['calculator_cab_fare'] = array(
+    '#title' => t('Cab or shuttle fare'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    // '#default_value' => t('$0.00'),
+	'#size' => 20, 
+    '#weight' => 8,
+  );
+  
+  $form['cos']['calculator_hourly_rate'] = array(
+    '#title' => t('Hourly rate'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    '#weight' => 9,
+  );
+  
+  $form['cos']['calculator_driving_time'] = array(
+    '#title' => t('Driving time (minutes)'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    '#weight' => 10,
+  );
+  
+  
+  // BEGIN DENVER COSTS
+  $form['den']['calculator_flight_cost'] = array(
+    '#title' => t('Flight Cost'),
+    '#description' => t('The amount you pay for your ticket to fly from the Denver airport.'),
+    '#type' => 'textfield',
+	'#maxlength' => 11,
+	'#maxlength' => 11,
+    // '#default_value' => t('$0.00'),
+	'#size' => 20, 
+    '#weight' => 1,
+  );
+  
+  $form['den']['calculator_parking_rate'] = array(
+    '#title' => t('Parking Rate (per day)'),
+    '#description' => t('The amount you pay to leave your car at the Denver airport.'),
+    '#type' => 'select',
+	'#options' => drupal_map_assoc(
+		array(
+			t('Shuttle Lot $8'), 
+			t('Economy $12'), 
+			t('Garage $23'), 
+			t('Valet $32'), 
+			t('Short Term $96')
+		)
+	),
+	'#validated' => true,
+    '#weight' => 2,
+  );
+  
+  $form['den']['calculator_free_parking'] = array(
+    '#title' => t('Free parking (coupon)'),
+    '#description' => t(''),
+    '#type' => 'select',
+	'#options' => drupal_map_assoc(array(t('N/A'))),
+    '#default_value' => null,
+	'#disabled' => true,
+    '#weight' => 3,
+  );
+  
+  $form['den']['calculator_days_travel'] = array(
+    '#title' => t('Days of travel'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    '#weight' => 4,
+  );
+  
+  $form['den']['calculator_mileage_charge'] = array(
+    '#title' => t('Mileage charge'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => t('0.565'),
+	'#size' => 20, 
+    '#weight' => 5,
+  );
+  
+  $form['den']['calculator_distance_miles'] = array(
+    '#title' => t('Distance to Airport (miles)'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    '#weight' => 6,
+  );
+  
+  $form['den']['calculator_toll'] = array(
+    '#title' => t('Toll: E470'),
+    '#description' => t(''),
+    '#type' => 'checkbox',
+    '#default_value' => false,
+    '#weight' => 7,
+  );
+  
+  $form['den']['calculator_cab_fare'] = array(
+    '#title' => t('Cab or shuttle fare'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    // '#default_value' => t('$0.00'),
+	'#size' => 20, 
+    '#weight' => 8,
+  );
+  
+  $form['den']['calculator_hourly_rate'] = array(
+    '#title' => t('Hourly rate'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    '#weight' => 9,
+  );
+  
+  $form['den']['calculator_driving_time'] = array(
+    '#title' => t('Driving time (minutes)'),
+    '#description' => t(''),
+    '#type' => 'textfield',
+    '#default_value' => null,
+	'#size' => 20, 
+    '#weight' => 10,
+  );
+  
+  $form['submit'] = array (
+	'#type' => 'submit',
+	'#value' => t('Calculate'),
+	'#weight' => 15,
+	'#prefix' => '<div style="clear:both;">',
+	'#suffix' => '</div>',
+  );
+  
+  return $form;
+}
+
+
+/**
+ * Submits form.
+ */
+
+function calculator_form_submit($form, &$form_state) {
+
+  // Create a bunch of variables for ajax to work with
+  $cosflightcost = $form_state['values']['calculator_flight_cost'];
+  $cosparking = $form_state['values']['calculator_parking_rate'];
+  $cosfreeparking = $form_state['values']['calculator_free_parking'];
+  $cosdaystravel = $form_state['values']['calculator_days_travel'];
+  $cosmileage = $form_state['values']['calculator_mileage_charge'];
+  $cosdistance = $form_state['values']['calculator_distance_miles'];
+  $costoll = $form_state['values']['calculator_toll'];
+  $coscabfare = $form_state['values']['calculator_cab_fare'];
+  $coshourlyrate = $form_state['values']['calculator_hourly_rate'];
+  $cosdrivingtime = $form_state['values']['calculator_driving_time'];
+  
+  $cosparkcost = ($cosparking * $cosdaystravel);
+  $cosfreeparking = ($cosfreeparking - $cosdaystravel);
+  $cosgas = ($cosdistance * $cosmileage);
+  
+  
+  $totalcos = $cosflightcost + $cosparkcost + $cosfreeparking + $costoll + $cosgas + $coscabfare + $coshourlyrate + $cosdrivingtime;
+
+  drupal_set_message(t('You have claimed to be %total',
+    array(
+	  '%total' => $totalcos,
+    )
+  ));
+  $form_state['rebuild'] = TRUE;
+}
+ 
